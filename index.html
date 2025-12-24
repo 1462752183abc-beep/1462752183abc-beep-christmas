@@ -3,20 +3,19 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
-    <title>Merry Christmas</title>
+    <title>圣诞快乐 | 小夏同学</title>
     <style>
-        /* 引入艺术字体，如果加载失败会回退到普通字体 */
+        /* 引入艺术字体 */
         @import url('https://fonts.googleapis.com/css2?family=Great+Vibes&display=swap');
 
         body { 
             margin: 0; 
             overflow: hidden; 
-            /* 初始背景：参考你提供的文件，使用深蓝夜色渐变 */
             background: radial-gradient(circle at center, #1a3a5f 0%, #0c1e2f 100%);
             font-family: 'Arial', sans-serif; 
             height: 100vh;
             width: 100vw;
-            transition: background 3s ease; /* 背景色过渡 */
+            transition: background 3s ease;
         }
 
         /* 画布层 */
@@ -30,7 +29,7 @@
             z-index: 1;
         }
 
-        /* UI层：保证文字在Canvas之上 */
+        /* UI层 */
         .ui-layer {
             position: absolute;
             top: 0;
@@ -38,7 +37,7 @@
             width: 100%;
             height: 100%;
             z-index: 10;
-            pointer-events: none; /* 让点击穿透，点击屏幕就是点击Canvas */
+            pointer-events: none;
             display: flex;
             flex-direction: column;
             justify-content: center;
@@ -46,7 +45,7 @@
             text-align: center;
         }
 
-        /* 1. 初始提示文字 (点击后需要隐藏) */
+        /* 初始提示文字 */
         #start-hint {
             color: rgba(255, 255, 255, 0.9);
             text-shadow: 0 0 10px rgba(255, 255, 255, 0.5);
@@ -69,23 +68,22 @@
             animation: shine 3s infinite linear;
         }
 
-        /* 2. 祝福语 (点击后显示) */
+        /* 祝福语 */
         #message-box {
             opacity: 0;
             transform: translateY(30px);
-            transition: all 2.5s ease 0.5s; /* 延迟0.5秒显示，让粒子先飞一会 */
+            transition: all 2.5s ease 0.5s;
             position: absolute;
-            top: 35%; /* 稍微靠上 */
+            top: 35%;
         }
 
         h1.title {
             font-family: 'Great Vibes', cursive;
-            font-size: 4.5rem; /* 大字体 */
+            font-size: 4.5rem;
             color: #fff;
             margin: 0;
             text-shadow: 0 0 15px #ffcc00, 0 0 30px #ff3333;
             line-height: 1.2;
-            /* 新增：文字呼吸动画（和圣诞树呼吸节奏呼应） */
             animation: textBreath 3s ease-in-out infinite;
         }
 
@@ -96,8 +94,26 @@
             letter-spacing: 2px;
             line-height: 1.8;
             text-shadow: 0 0 5px rgba(0,0,0,0.8);
-            /* 可选：给副标题添加轻微呼吸效果（幅度更小） */
             animation: textBreath 4s ease-in-out infinite;
+        }
+
+        /* 手动音量按钮 */
+        #sound-btn {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            z-index: 20;
+            pointer-events: auto;
+            background: rgba(255,255,255,0.3);
+            border: none;
+            border-radius: 50%;
+            width: 50px;
+            height: 50px;
+            color: #fff;
+            font-size: 20px;
+            cursor: pointer;
+            backdrop-filter: blur(5px);
+            -webkit-backdrop-filter: blur(5px); /* 适配iOS */
         }
 
         /* 动画关键帧 */
@@ -111,19 +127,18 @@
             100% { background-position: 200%; }
         }
 
-        /* 新增：文字呼吸动画关键帧 */
         @keyframes textBreath {
             0%, 100% { 
                 transform: scale(1); 
-                text-shadow: 0 0 15px #ffcc00, 0 0 30px #ff3333; /* 初始阴影 */
+                text-shadow: 0 0 15px #ffcc00, 0 0 30px #ff3333;
             }
             50% { 
-                transform: scale(1.05); /* 放大5%，幅度适中不夸张 */
-                text-shadow: 0 0 20px #ffcc00, 0 0 40px #ff3333, 0 0 5px rgba(255,255,255,0.8); /* 放大时阴影增强，更有层次感 */
+                transform: scale(1.05); 
+                text-shadow: 0 0 20px #ffcc00, 0 0 40px #ff3333, 0 0 5px rgba(255,255,255,0.8);
             }
         }
 
-        /* 功能类：用于JS控制 */
+        /* 功能类 */
         .hidden { 
             opacity: 0 !important; 
             pointer-events: none; 
@@ -136,18 +151,20 @@
 
         /* 点击后的暖色背景 */
         .warm-theme {
-            /* 从深蓝变为温馨的圣诞红/暗棕色 */
             background: radial-gradient(circle at center, #6b0f0f 0%, #290505 100%) !important;
         }
     </style>
 </head>
 <body>
+    <!-- 音频（适配苹果微信） -->
+    <audio id="bgm" loop preload="metadata">
+        <!-- 主源：圣诞纯音乐（网易云国内CDN） -->
+        <source src="https://music.163.com/song/media/outer/url?id=1860626084.mp3" type="audio/mpeg">
+        <!-- 备用源：Jingle Bells（酷我国内CDN） -->
+        <source src="https://cdn.kuwo.cn/newh5/singles/songinfoandplay/395878577.mp3?from=web" type="audio/mpeg">
+    </audio>
 
-   <audio id="bgm" loop preload="auto">
-        <source src="https://actions.google.com/sounds/v1/holidays/deck_the_halls.ogg" type="audio/ogg">
-        <source src="https://raw.githubusercontent.com/muhammederdem/mini-player/master/mp3/2.mp3" type="audio/mp3">
-        </audio>
-
+    <!-- UI层 -->
     <div class="ui-layer">
         <div id="start-hint">
             <div class="hint-icon">🎄</div>
@@ -161,31 +178,35 @@
                 平安喜乐，万事胜意
             </p>
         </div>
+
+        <!-- 手动音量按钮 -->
+        <button id="sound-btn">🔊</button>
     </div>
 
+    <!-- 3D画布容器 -->
     <div id="canvas-container"></div>
 
+    <!-- Three.js库 -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
 
     <script>
-        // --- 全局变量 ---
+        // 全局变量
         let scene, camera, renderer;
         let treeSystem, starSystem, snowSystem;
         let isExploded = false;
         let clock = new THREE.Clock();
 
-        // --- 初始化入口 ---
+        // 初始化
         function init() {
             const container = document.getElementById('canvas-container');
 
             // 1. 创建场景
             scene = new THREE.Scene();
-            // 初始雾气：蓝色调，配合背景
             scene.fog = new THREE.FogExp2(0x0c1e2f, 0.002);
 
             // 2. 创建相机
             camera = new THREE.PerspectiveCamera(60, window.innerWidth / window.innerHeight, 0.1, 1000);
-            camera.position.set(0, 0, 45); // 稍微拉远距离
+            camera.position.set(0, 0, 45);
 
             // 3. 渲染器
             renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true });
@@ -200,15 +221,17 @@
 
             // 5. 事件监听
             window.addEventListener('resize', onResize);
-            // 兼容移动端和PC端的点击
             document.body.addEventListener('click', onInteract);
             document.body.addEventListener('touchstart', onInteract, {passive: false});
 
-            // 6. 循环动画
+            // 6. 手动音量按钮事件
+            initSoundBtn();
+
+            // 7. 动画循环
             animate();
         }
 
-        // --- 核心功能：创建发光纹理 (不需要外部图片) ---
+        // 创建发光纹理
         function createGlowTexture(r, g, b) {
             const canvas = document.createElement('canvas');
             canvas.width = 32;
@@ -227,33 +250,28 @@
             return texture;
         }
 
-        // --- 1. 圣诞树粒子系统 ---
+        // 创建圣诞树粒子
         function createTreeParticles() {
             const geometry = new THREE.BufferGeometry();
-            const count = 3500; // 粒子数量
+            const count = 3500;
             const positions = [];
             const colors = [];
-            const speeds = []; // 存储每个粒子的独特速度
+            const speeds = [];
 
             const colorGreen = new THREE.Color(0x55ff88);
             const colorRed = new THREE.Color(0xff3333);
             const colorGold = new THREE.Color(0xffd700);
 
             for (let i = 0; i < count; i++) {
-                // 算法：圆锥螺旋
                 const angle = i * 0.1;
-                // 高度从 -15 到 15
-                const y = (i / count) * 35 - 18; 
-                // 半径随高度变小 (底部宽，顶部窄)
-                const radius = (1 - (i / count)) * 14; 
+                const y = (i / count) * 35 - 18;
+                const radius = (1 - (i / count)) * 14;
                 
-                // 增加一些随机性，让树看起来毛茸茸的
                 const x = Math.cos(angle) * radius + (Math.random()-0.5) * 1.5;
                 const z = Math.sin(angle) * radius + (Math.random()-0.5) * 1.5;
 
                 positions.push(x, y, z);
 
-                // 颜色分配：80%绿，10%红，10%金
                 const rand = Math.random();
                 if (rand > 0.9) {
                     colors.push(colorRed.r, colorRed.g, colorRed.b);
@@ -263,27 +281,22 @@
                     colors.push(colorGreen.r, colorGreen.g, colorGreen.b);
                 }
 
-                // 预存扩散速度 (x, y, z) - 调整为更慢的速度
                 speeds.push(
-                    (Math.random() - 0.5) * 0.3, // X轴漂移
-                    Math.random() * 0.3 + 0.15,   // Y轴向上升
-                    (Math.random() - 0.5) * 0.3   // Z轴漂移
+                    (Math.random() - 0.5) * 0.3,
+                    Math.random() * 0.3 + 0.15,
+                    (Math.random() - 0.5) * 0.3
                 );
             }
 
             geometry.setAttribute('position', new THREE.Float32BufferAttribute(positions, 3));
             geometry.setAttribute('color', new THREE.Float32BufferAttribute(colors, 3));
             geometry.setAttribute('aSpeed', new THREE.Float32BufferAttribute(speeds, 3));
-
-            // 保存原始位置
-            geometry.userData = { 
-                originalPositions: positions.slice() 
-            };
+            geometry.userData = { originalPositions: positions.slice() };
 
             const material = new THREE.PointsMaterial({
                 size: 0.7,
                 vertexColors: true,
-                map: createGlowTexture(255, 255, 255), // 使用白色纹理，颜色由vertexColors控制
+                map: createGlowTexture(255, 255, 255),
                 blending: THREE.AdditiveBlending,
                 depthWrite: false,
                 transparent: true,
@@ -294,7 +307,7 @@
             scene.add(treeSystem);
         }
 
-        // --- 2. 树顶大星星 ---
+        // 创建树顶星星
         function createTopStar() {
             const geometry = new THREE.BufferGeometry();
             geometry.setAttribute('position', new THREE.Float32BufferAttribute([0, 18, 0], 3));
@@ -312,7 +325,7 @@
             scene.add(starSystem);
         }
 
-        // --- 3. 背景雪花 ---
+        // 创建雪花
         function createSnow() {
             const geometry = new THREE.BufferGeometry();
             const count = 800;
@@ -341,129 +354,132 @@
             scene.add(snowSystem);
         }
 
-        // --- 交互触发函数 ---
-        function onInteract(e) {
-            // 防止重复触发
-            if (isExploded) return;
-            
-            // 兼容性处理：如果是触摸事件，阻止部分默认行为
-            // if(e.type === 'touchstart') e.preventDefault(); 
-
-            // 1. 播放音乐
-            const audio = document.getElementById('bgm');
-            audio.volume = 0.5; // 音量调整为50%，更柔和
-            audio.play().then(() => {
-                console.log("圣诞音乐播放中");
-            }).catch(err => {
-                console.log("音乐播放失败（浏览器交互策略）:", err);
+        // 手动音量按钮初始化
+        function initSoundBtn() {
+            const soundBtn = document.getElementById('sound-btn');
+            soundBtn.addEventListener('click', function() {
+                const audio = document.getElementById('bgm');
+                audio.volume = 0.5;
+                
+                if (audio.paused) {
+                    // 解锁iOS音频上下文后播放
+                    const AudioContext = window.AudioContext || window.webkitAudioContext;
+                    if (AudioContext) {
+                        new AudioContext().resume().then(() => audio.play());
+                    } else {
+                        audio.play();
+                    }
+                    this.innerHTML = "🎵";
+                } else {
+                    audio.pause();
+                    this.innerHTML = "🔊";
+                }
             });
-
-            // 2. 状态改变
-            isExploded = true;
-
-            // 3. UI 变换 (关键需求)
-            const startHint = document.getElementById('start-hint');
-            const messageBox = document.getElementById('message-box');
-            
-            // 隐藏开始文字
-            startHint.classList.add('hidden');
-            
-            // 显示祝福语
-            messageBox.classList.add('visible');
-
-            // 4. 背景变换
-            document.body.classList.add('warm-theme');
-            
-            // 改变雾气颜色以匹配背景
-            scene.fog.color.setHex(0x290505); 
         }
 
-        // --- 动画循环 ---
+        // 交互触发函数（适配苹果微信音频）
+        function onInteract(e) {
+            if (isExploded) return;
+            if(e.type === 'touchstart') e.preventDefault();
+
+            // 解锁iOS音频上下文
+            const AudioContext = window.AudioContext || window.webkitAudioContext;
+            if (AudioContext) {
+                const audioCtx = new AudioContext();
+                audioCtx.resume().then(() => {}).catch(err => console.log('解锁音频:', err));
+            }
+
+            // 播放音频（带重试逻辑）
+            const audio = document.getElementById('bgm');
+            audio.volume = 0.5;
+            audio.pause();
+            audio.currentTime = 0;
+            
+            const playAudio = () => {
+                audio.play().then(() => {
+                    console.log('音频播放成功');
+                }).catch(err => {
+                    console.log('播放重试:', err);
+                    setTimeout(() => audio.play(), 100);
+                });
+            };
+            playAudio();
+
+            // UI和场景切换
+            isExploded = true;
+            document.getElementById('start-hint').classList.add('hidden');
+            document.getElementById('message-box').classList.add('visible');
+            document.body.classList.add('warm-theme');
+            scene.fog.color.setHex(0x290505);
+        }
+
+        // 动画循环
         function animate() {
             requestAnimationFrame(animate);
-            
             const time = clock.getElapsedTime();
 
             if (!isExploded) {
-                // --- 状态A：正常旋转 - 降低旋转速度，更优雅
-                treeSystem.rotation.y -= 0.003; // 从0.005调整到0.003，旋转更慢
-                
-                // 呼吸效果 - 降低频率，更舒缓（和文字呼吸呼应）
-                const scale = 1 + Math.sin(time * 1.5) * 0.05; // 振幅0.05，和文字动画幅度匹配
+                // 圣诞树缓慢旋转
+                treeSystem.rotation.y -= 0.003;
+                // 圣诞树明显呼吸效果
+                const scale = 1 + Math.sin(time * 1.5) * 0.05;
                 treeSystem.scale.set(scale, scale, scale);
-                
-                // 星星闪烁 - 降低频率，更柔和
-                starSystem.material.size = 4 + Math.sin(time * 3) * 0.8; // 从4调整到3，闪烁更慢
-                starSystem.material.opacity = 0.8 + Math.sin(time * 2.0) * 0.2; // 从2.5调整到2.0
-
+                // 星星缓慢闪烁
+                starSystem.material.size = 4 + Math.sin(time * 3) * 0.8;
+                starSystem.material.opacity = 0.8 + Math.sin(time * 2.0) * 0.2;
             } else {
-                // --- 状态B：委婉爆发 (优雅扩散) ---
-                
+                // 圣诞树粒子扩散
                 const positions = treeSystem.geometry.attributes.position.array;
                 const speeds = treeSystem.geometry.attributes.aSpeed.array;
                 
-                // 遍历每个粒子
                 for (let i = 0; i < positions.length; i += 3) {
-                    // 1. 获取当前坐标
                     const x = positions[i];
                     const y = positions[i+1];
                     const z = positions[i+2];
-
-                    // 2. 优雅扩散逻辑
-                    // 每一个粒子沿着原来的方向稍微向外扩（膨胀），同时向上升
                     
-                    // 计算当前半径
                     const currentRadius = Math.sqrt(x*x + z*z);
                     const angle = Math.atan2(z, x);
-
-                    // 缓慢膨胀系数
                     const expansion = 1.005;
                     
-                    // 更新位置
                     positions[i] = Math.cos(angle) * currentRadius * expansion + speeds[i] * 0.05;
                     positions[i+1] = y + speeds[i+1] * 0.1;
                     positions[i+2] = Math.sin(angle) * currentRadius * expansion + speeds[i+2] * 0.05;
                 }
 
                 treeSystem.geometry.attributes.position.needsUpdate = true;
-                
-                // 稍微旋转，增加流动感
                 treeSystem.rotation.y -= 0.001;
-
-                // 粒子逐渐淡出
+                
+                // 粒子淡出
                 if (treeSystem.material.opacity > 0.1) {
                     treeSystem.material.opacity -= 0.002;
                 }
                 
-                // 星星爆发后缓慢变大并消失
+                // 星星放大消失
                 starSystem.scale.multiplyScalar(1.01);
                 starSystem.material.opacity -= 0.005;
             }
 
-            // 雪花持续下落 - 降低速度，更优雅
+            // 雪花缓慢下落
             const snowPos = snowSystem.geometry.attributes.position.array;
             for(let i=1; i<snowPos.length; i+=3) {
-                snowPos[i] -= 0.07; // 从0.1调整到0.07，下落更慢
+                snowPos[i] -= 0.07;
                 if(snowPos[i] < -50) snowPos[i] = 50;
             }
             snowSystem.geometry.attributes.position.needsUpdate = true;
-            
-            // 降低雪花旋转速度
-            snowSystem.rotation.y = time * 0.015; // 从0.02调整到0.015，旋转更慢
+            snowSystem.rotation.y = time * 0.015;
 
             renderer.render(scene, camera);
         }
 
-        // --- 窗口自适应 ---
+        // 窗口自适应
         function onResize() {
             camera.aspect = window.innerWidth / window.innerHeight;
             camera.updateProjectionMatrix();
             renderer.setSize(window.innerWidth, window.innerHeight);
         }
 
-        // 启动
+        // 启动程序
         init();
-
     </script>
 </body>
 </html>
